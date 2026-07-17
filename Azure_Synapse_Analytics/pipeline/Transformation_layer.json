@@ -1,0 +1,72 @@
+{
+	"name": "Transformation_layer",
+	"properties": {
+		"activities": [
+			{
+				"name": "Data Transformation",
+				"type": "ExecuteDataFlow",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "Dataflow_transform",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "SilverTable",
+				"type": "Script",
+				"dependsOn": [
+					{
+						"activity": "Data Transformation",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "ls_serverlessSql",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "Query",
+							"text": {
+								"value": "IF NOT EXISTS(SELECT * FROM sys.tables t JOIN sys.schemas s on t.schema_id = s.schema_id\nWHERE t.name='ext_silvertable' and s.name='silver')\nCREATE EXTERNAL TABLE silver.ext_silvertable\n(\n    OrderID         VARCHAR(50),\n    OrderDate       DATETIME,\n    CustomerID      VARCHAR(50),\n    CustomerName    VARCHAR(100),\n    CustomerEmail   VARCHAR(100),\n    ProductID       VARCHAR(50),\n    ProductName     VARCHAR(100),\n    ProductCategory VARCHAR(100),\n    RegionID        VARCHAR(50),\n    RegionName      VARCHAR(100),\n    Country         VARCHAR(100),\n    Quantity        VARCHAR(50),\n    UnitPrice       VARCHAR(20),\n    TotalAmount     VARCHAR(20),\n    Domain          VARCHAR(100)\n)\nWITH\n(\n    LOCATION = 'enrichedSales/',\n    DATA_SOURCE = silver_extsource,\n    FILE_FORMAT = ParquetFileFormat  -- referncing the file format object by its name\n)",
+								"type": "Expression"
+							}
+						}
+					],
+					"scriptBlockExecutionTimeout": "02:00:00"
+				}
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2026-07-11T10:54:29Z"
+	},
+	"type": "Microsoft.Synapse/workspaces/pipelines"
+}

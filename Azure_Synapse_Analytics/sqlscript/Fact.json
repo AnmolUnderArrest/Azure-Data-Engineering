@@ -1,0 +1,17 @@
+{
+	"name": "Fact",
+	"properties": {
+		"content": {
+			"query": "select * from silver.ext_silvertable\nselect * from gold.DimCustomer\n\n--creating facts\nIF NOT EXISTS(SELECT * from sys.tables t join sys.schemas s on t.schema_id= s.schema_id\n            WHERE t.name='FactOrders' and s.name='gold')\n    CREATE EXTERNAL TABLE gold.FactOrders\n    WITH(\n        LOCATION= 'FactOrders',\n        DATA_SOURCE= gold_extsource,\n        FILE_FORMAT = parquet_file_format\n    )\nAS\nselect\n    O.DimOrdersKey,\n    C.DimCustomerKey,\n    P.DimProductKey,\n    G.DimGeographyKey,\n    F.Quantity,\n    F.UnitPrice,\n    F.TotalAmount\nFROM\n    silver.ext_silvertable F\nLEFT JOIN \n    gold.DimOrders O on F.OrderID = O.OrderID \nLEFT JOIN \n    gold.DimCustomer C on F.CustomerID = C.CustomerID \nLEFT JOIN \n    gold.DimProduct P on F.ProductID = P.ProductID \n\nLEFT JOIN \n   gold.DimGeography G on F.RegionID = G.RegionID and F.Country= G.Country\n\n\nselect * from gold.FactOrders\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "SalesDWH",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

@@ -1,0 +1,17 @@
+{
+	"name": "External Resources",
+	"properties": {
+		"content": {
+			"query": "-- create master key for this db\n\n\n\n\n\n-- create databse scoped credential\n---------------------------------------\ncreate database scoped credential anmol_credential\nwith IDENTITY = 'Managed Identity'\n\n\n--external data source silver\nCREATE EXTERNAL DATA SOURCE silver_extsource\nWITH(\n    LOCATION = 'https://azuredwhextlake.dfs.core.windows.net/silver/',\n    CREDENTIAL = anmol_credential\n)\n\n--external data source gold\nCREATE EXTERNAL DATA SOURCE gold_extsource\nWITH(\n    LOCATION = 'https://azuredwhextlake.dfs.core.windows.net/gold/',\n    CREDENTIAL = anmol_credential\n)\n\n-- external file formats for silver\nCREATE EXTERNAL FILE FORMAT parquet_file_format\nWITH\n(  \n    FORMAT_TYPE = PARQUET,\n    DATA_COMPRESSION = 'org.apache.hadoop.io.compress.SnappyCodec'\n)\n\n-- external file formats for gold(delta)\nCREATE EXTERNAL FILE FORMAT delta_file_format\nWITH\n(  \n    FORMAT_TYPE = DELTA\n)",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "SalesDWH",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
