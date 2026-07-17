@@ -1,0 +1,71 @@
+{
+	"name": "Dataflow_transform",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ds_bronzeParquet",
+						"type": "DatasetReference"
+					},
+					"name": "sourceBronze"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_silverParquet",
+						"type": "DatasetReference"
+					},
+					"name": "silverdestination"
+				}
+			],
+			"transformations": [
+				{
+					"name": "CapitalizeRegioCcountry"
+				},
+				{
+					"name": "filter1"
+				},
+				{
+					"name": "adddomain"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          OrderID as string,",
+				"          OrderDate as date,",
+				"          CustomerID as string,",
+				"          CustomerName as string,",
+				"          CustomerEmail as string,",
+				"          ProductID as string,",
+				"          ProductName as string,",
+				"          ProductCategory as string,",
+				"          RegionID as string,",
+				"          RegionName as string,",
+				"          Country as string,",
+				"          Quantity as string,",
+				"          UnitPrice as string,",
+				"          TotalAmount as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     format: 'parquet') ~> sourceBronze",
+				"sourceBronze derive(RegionName = upper(RegionName),",
+				"          Country = upper(Country)) ~> CapitalizeRegioCcountry",
+				"CapitalizeRegioCcountry filter(between(toInteger(UnitPrice), 100, 500)) ~> filter1",
+				"filter1 derive(Domain = split(CustomerEmail,'@')[2]) ~> adddomain",
+				"adddomain sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'parquet',",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> silverdestination"
+			]
+		}
+	}
+}
