@@ -1,0 +1,70 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "factoryName": {
+            "type": "string",
+            "metadata": "Data Factory name",
+            "defaultValue": "adf-anmol"
+        },
+        "adfstoragelinkedservice_accountKey": {
+            "type": "secureString",
+            "metadata": "Secure string for 'accountKey' of 'adfstoragelinkedservice'"
+        },
+        "managerTrigger_properties_typeProperties_scope": {
+            "type": "string",
+            "defaultValue": "/subscriptions/30cb793f-129f-45c8-af02-18f638242281/resourceGroups/AzureDataFactory/providers/Microsoft.Storage/storageAccounts/storagedatafactoryanmolg"
+        },
+        "adfstoragelinkedservice_properties_typeProperties_url": {
+            "type": "string",
+            "defaultValue": "https://storagedatafactoryanmolg.dfs.core.windows.net/"
+        },
+        "GitLinkService_properties_typeProperties_url": {
+            "type": "string",
+            "defaultValue": "https://github.com"
+        },
+        "containerUri": {
+            "type": "string",
+            "metadata": "URI to storage account containing linked ARM templates"
+        },
+        "containerSasToken": {
+            "type": "string",
+            "metadata": "Sas token to storage account containing linked ARM templates"
+        }
+    },
+    "variables": {
+        "factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+    },
+    "resources": [
+        {
+            "name": "adf-anmol_ArmTemplate_0",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2024-03-01",
+            "properties": {
+                "mode": "incremental",
+                "templateLink": {
+                    "uri": "[concat(parameters('containerUri'), '/ArmTemplate_0.json', parameters('containerSasToken'))]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "factoryName": {
+                        "value": "[parameters('factoryName')]"
+                    },
+                    "adfstoragelinkedservice_accountKey": {
+                        "value": "[parameters('adfstoragelinkedservice_accountKey')]"
+                    },
+                    "adfstoragelinkedservice_properties_typeProperties_url": {
+                        "value": "[parameters('adfstoragelinkedservice_properties_typeProperties_url')]"
+                    },
+                    "GitLinkService_properties_typeProperties_url": {
+                        "value": "[parameters('GitLinkService_properties_typeProperties_url')]"
+                    },
+                    "managerTrigger_properties_typeProperties_scope": {
+                        "value": "[parameters('managerTrigger_properties_typeProperties_scope')]"
+                    }
+                }
+            },
+            "dependsOn": []
+        }
+    ]
+}
