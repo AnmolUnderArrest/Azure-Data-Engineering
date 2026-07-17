@@ -1,0 +1,45 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "factoryName": {
+            "value": "anmoladflearningproj"
+        },
+        "ls_onprem_file_password": {
+            "value": ""
+        },
+        "ls_datalake_accountKey": {
+            "value": ""
+        },
+        "ls_sqldb_password": {
+            "value": ""
+        },
+        "ls_onprem_file_properties_typeProperties_host": {
+            "value": "C:\\Anmol_DEfiles"
+        },
+        "ls_onprem_file_properties_typeProperties_userId": {
+            "value": "laptop-c8ai4r5l\\asus"
+        },
+        "ls_datalake_properties_typeProperties_url": {
+            "value": "https://adfanmolstorageaccount.dfs.core.windows.net/"
+        },
+        "ls_github_source_properties_typeProperties_url": {
+            "value": "https://raw.githubusercontent.com"
+        },
+        "ls_sqldb_properties_typeProperties_server": {
+            "value": "adfsqlprojserver.database.windows.net"
+        },
+        "ls_sqldb_properties_typeProperties_database": {
+            "value": "adfprojdb"
+        },
+        "ls_sqldb_properties_typeProperties_userName": {
+            "value": "cloud_admin_99"
+        },
+        "containerUri": {
+            "value": ""
+        },
+        "containerSasToken": {
+            "value": ""
+        }
+    }
+}
